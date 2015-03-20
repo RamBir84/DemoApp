@@ -30,6 +30,13 @@
             android:layout_weight="25"
             android:text="Name" />
 
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="send data" 
+            android:onClick="sendData"/>
+
         <TextView
             style="@style/FormSmallLabel"
             android:layout_width="0px"
