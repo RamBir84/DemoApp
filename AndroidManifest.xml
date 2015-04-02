@@ -10,21 +10,17 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- for GCM -->
+    <uses-permission  android:name="android.permission.INTERNET" />
+    <!-- for GCM --> 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
-    <permission
-        android:name="com.example.gcm.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
+    <permission android:name="com.example.gcm.permission.C2D_MESSAGE"
+    	android:protectionLevel="signature" />
     <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
     <!-- for mock locations -->
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    <!-- For FaceBook -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    
 
     <application
         android:allowBackup="true"
@@ -34,16 +30,11 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-
         <activity
             android:name="com.example.demoapp.LoginScreen"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -51,25 +42,23 @@
             android:name="com.example.demoapp.HomeScreen"
             android:label="@string/app_name" >
         </activity>
-
         <service
             android:name=".MyLocationHandler"
             android:enabled="true" >
         </service>
         <service android:name=".geofencingService" />
-
+        
         <!-- for GCM -->
         <receiver
             android:name=".GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="com.example.gcm" />
+        <intent-filter>
+            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            <category android:name="com.example.gcm" />
             </intent-filter>
         </receiver>
-
         <service android:name=".GcmIntentService" />
+        	 
     </application>
     
     <!-- -->

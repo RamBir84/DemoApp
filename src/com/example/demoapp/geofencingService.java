@@ -178,7 +178,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	public void sendCheckInToServer(int userId, boolean onCampus ) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("userId", Integer.toString(userId)));
-		params.add(new BasicNameValuePair("onCampus", Integer.toString(onCampus? 1 : 2)));
+		params.add(new BasicNameValuePair("onCampus", Boolean.toString(onCampus)));
 		new ServerCommunicator(this, params, ServerCommunicator.METHOD_POST)
 				.execute("http://ram.milab.idc.ac.il/app_send_chekin.php");
 	}
