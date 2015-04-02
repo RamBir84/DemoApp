@@ -71,5 +71,13 @@
 
         <service android:name=".GcmIntentService" />
     </application>
+    
+    <!-- -->
+     <activity
+        android:name="com.example.demoapp.NewHomeScreen"
+        android:label="@string/app_name" >
+     </activity>
+    
+    
 
 </manifest>
