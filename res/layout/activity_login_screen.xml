@@ -85,6 +85,14 @@
             android:onClick="sendData"
             android:text="Send Data"
             android:textColor="#ff0066" />
+        
+        <com.facebook.widget.LoginButton
+            android:id="@+id/authButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            />
     </LinearLayout>
 
 </LinearLayout>
