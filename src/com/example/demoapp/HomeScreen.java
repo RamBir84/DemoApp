@@ -317,6 +317,7 @@ public class HomeScreen extends Activity implements ServerAsyncParent {
 	// Send an upstream message.
 	public void onClickSendData(final View view) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		System.out.println("the registration id: " + regid);
 		
 		/* here we put the reciever id" */
 		params.add(new BasicNameValuePair("target", targetID));
@@ -325,8 +326,6 @@ public class HomeScreen extends Activity implements ServerAsyncParent {
 		
 		new ServerCommunicator(this, params, ServerCommunicator.METHOD_POST)
 				.execute("http://ram.milab.idc.ac.il/GCM_send_message.php");
-<<<<<<< Updated upstream
-
 	}
 
 	@Override
@@ -348,49 +347,6 @@ public class HomeScreen extends Activity implements ServerAsyncParent {
 		}
 	}
 
-	/**
-	 * @return Application's {@code SharedPreferences}.
-	 */
-	private SharedPreferences getGcmPreferences(Context context) {
-		// This sample app persists the registration ID in shared preferences,
-		// but
-		// how you store the regID in your app is up to you.
-		return getSharedPreferences(HomeScreen.class.getSimpleName(), Context.MODE_PRIVATE);
-	}
-
-	/**
-	 * Sends the registration ID to your server over HTTP, so it can use
-	 * GCM/HTTP or CCS to send messages to your app. Not needed for this demo
-	 * since the device sends upstream messages to a server that echoes back the
-	 * message using the 'from' address in the message.
-	 */
-	private void sendRegistrationIdToBackend() {
-
-		// Your implementation here.
-		// we can update the server here about the registretion ID
-	}
-
-=======
-    }
-    
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
 
     /**
      * @return Application's {@code SharedPreferences}.
@@ -412,6 +368,4 @@ public class HomeScreen extends Activity implements ServerAsyncParent {
       // we can update the server here about the registretion ID
     }
     
-    
->>>>>>> Stashed changes
 }

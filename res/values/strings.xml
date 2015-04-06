@@ -3,5 +3,7 @@
 
     <string name="app_name">Waldo</string>
     <string name="facebook_app_id">9oSgCI/O3iADzZtQ5j1dSgWT/is=</string>
+    <string name="action_search">action_search</string>
+    <string name="action_settings">action_settings</string>
 
 </resources>
