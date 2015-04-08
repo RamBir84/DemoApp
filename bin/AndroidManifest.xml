@@ -52,23 +52,29 @@
        <activity
           android:name="com.example.demoapp.NewHomeScreen"
           android:label="@string/app_name" > 
-             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> 
+ 
 
        </activity>   
        <activity
           android:name="com.example.demoapp.TagsScreen"
           android:label="@string/app_name" >
- 
+
        </activity>           
 
 		<activity
 		android:name="com.example.demoapp.AnswerPopup"
 		android:label="@string/app_name" >
-
 		</activity>
+		
+       <activity
+          android:name="com.example.demoapp.NewLoginScreen"
+          android:label="@string/app_name" >
+                                  <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+       </activity>  		
        
 
 		

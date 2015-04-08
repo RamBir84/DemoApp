@@ -14,10 +14,12 @@ public class ListItem {
 	public boolean isHeader = false;
 
 	//Constructor
-	public ListItem(String contact_name, String Location, Bitmap profile_pic, String icon_status) {
+	public ListItem(String contact_name, String Location, Bitmap profile_pic, String icon_status, String ID) {
 		this.contact_name = contact_name;
 		this.Location = Location;
 		this.profile_pic = profile_pic;
 		this.icon_status = icon_status;
 	}
 }
+// General information - name, picture, ID
+// personal relationship - icon_status, location

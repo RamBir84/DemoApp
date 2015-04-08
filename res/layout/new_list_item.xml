@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0px"
             android:layout_weight="75"
-            android:onClick="onClickListProfile"
+            android:onClick="onClickListIcon"
             android:scaleType="fitXY"
             android:background="@drawable/icon_bg"/>            
     </LinearLayout>

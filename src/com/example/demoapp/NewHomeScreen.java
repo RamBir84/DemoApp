@@ -13,8 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -33,25 +34,27 @@ public class NewHomeScreen extends Activity {
 	Button btnClosePopup;	
 	private PopupWindow pwindo;
 	private int position;
+	FrameLayout blur_layout;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_home_screen);
-
+		blur_layout = (FrameLayout) findViewById(R.id.newScreenFrame);
+		blur_layout.getForeground().setAlpha(0);
 
 
 		// Some data
 		ArrayList<ListItem> fakeData = new ArrayList<ListItem>();
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "answer_received"));
-		fakeData.add(new ListItem("", "Empty name", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_sent"));
-		fakeData.add(new ListItem("Empty message", "", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_received"));
-		fakeData.add(new ListItem("Or Bokobza 3", "Check without image",null, "online"));
-		fakeData.add(new ListItem("Or Bokobza4", "I am in the cafeteria", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "online"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline"));
+		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "answer_received", "ID"));
+		fakeData.add(new ListItem("", "Empty name", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_sent", "ID"));
+		fakeData.add(new ListItem("Empty message", "", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_received", "ID"));
+		fakeData.add(new ListItem("Or Bokobza 3", "Check without image",null, "online", "ID"));
+		fakeData.add(new ListItem("Or Bokobza4", "I am in the cafeteria", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "online", "ID"));
+		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
+		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
+		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
+		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
+		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
 
 		mainContainer = (ListView)findViewById(R.id.mainContainer);
 		ListAdapter listAdapter = new MainListAdapter(this, fakeData);
@@ -91,7 +94,6 @@ public class NewHomeScreen extends Activity {
 		if (view.getId() == 5){
 			Toast.makeText(this, "The user is currently not on campus" + position, Toast.LENGTH_SHORT).show(); // Offline
 		}
-		//MainListAdapter.items.get(position).contact_name;
 	}
 
 	// ListProfile Button
@@ -113,7 +115,10 @@ public class NewHomeScreen extends Activity {
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
 		btnClosePopup = (Button) layout.findViewById(R.id.btn_close_popup);
 		btnClosePopup.setOnClickListener(cancel_button_click_listener);
-
+		// blur background and disable layout
+		blur_layout.getForeground().setAlpha(190);
+		pwindo.setFocusable(true);
+		pwindo.update();
 
 		// Set the contact name
 		TextView contactName = (TextView) layout.findViewById(R.id.answer_contact_name);
@@ -128,11 +133,13 @@ public class NewHomeScreen extends Activity {
 		Drawable profileImageAsDrawable = new BitmapDrawable(NewHomeScreen.this.getResources(),
 				MainListAdapter.items.get(position).profile_pic);
 		profilePicture.setImageDrawable(profileImageAsDrawable);
-	}
+		
 
-	
+	}
 	private OnClickListener cancel_button_click_listener = new OnClickListener() {
 		public void onClick(View v) {
+			// restore blur and enable layout
+			blur_layout.getForeground().setAlpha(0); 
 			pwindo.dismiss();
 		}
 	};	

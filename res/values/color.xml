@@ -13,6 +13,14 @@
     <item name="black" type="color">#231f20</item>
     <item name="dark_grey" type="color">#cccccc</item>
     <item name="transparent_grey" type="color">#1a000000</item>
+    <item name="grey_popup_text" type="color">#292929</item>
+    <item name="grey_popup_border" type="color">#41636d</item>
+    <item name="blue_facebook" type="color">#49639f</item>
+    
+   
+    
+    
+    
     
     
 </resources>

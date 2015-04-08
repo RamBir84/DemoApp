@@ -5,5 +5,14 @@
     <string name="facebook_app_id">9oSgCI/O3iADzZtQ5j1dSgWT/is=</string>
     <string name="action_search">action_search</string>
     <string name="action_settings">action_settings</string>
+    <string name="school_prompt">Choose your school</string>
+    
+        <string-array name="schools_list">
+        <item>IDC</item>
+        <item>Tel Aviv University</item>
+        <item>Ben Gurion University</item>
+        <item>Technion</item>
+        <item>Bar Ilan University</item>
+    </string-array>
 
 </resources>
