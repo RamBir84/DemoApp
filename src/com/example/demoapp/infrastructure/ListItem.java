@@ -11,14 +11,16 @@ public class ListItem {
 	public Bitmap profile_pic;
 	public String icon_status; //online, request_sent, request_received, answer_received, offline.
 	public String header = "";
+	public String tagDateTime = "";
 	public boolean isHeader = false;
 
 	//Constructor
-	public ListItem(String contact_name, String Location, Bitmap profile_pic, String icon_status, String ID) {
+	public ListItem(String contact_name, String Location, Bitmap profile_pic, String icon_status, String ID, String tagDateTime) {
 		this.contact_name = contact_name;
 		this.Location = Location;
 		this.profile_pic = profile_pic;
 		this.icon_status = icon_status;
+		this.tagDateTime = tagDateTime;
 	}
 }
 // General information - name, picture, ID

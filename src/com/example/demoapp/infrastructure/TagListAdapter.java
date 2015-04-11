@@ -42,9 +42,9 @@ public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 
 			rowView = inflater.inflate(R.layout.list_tag_item, parent, false);
 
-			// Set the tag  content
-			TextView album = (TextView) rowView.findViewById(R.id.listTagContent);
-			album.setText(items.get(position).tag_content);
+			// Set the tag content
+			TextView content = (TextView) rowView.findViewById(R.id.listTagContent);
+			content.setText(items.get(position).tag_content);
 			
 			// Set the Item position
 			LinearLayout listItem = (LinearLayout) rowView.findViewById(R.id.tag_list_item);

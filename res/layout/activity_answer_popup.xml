@@ -59,7 +59,7 @@
                     android:textSize="23sp" />
             </LinearLayout>
 
-            <!-- date when the location was sent -->
+            <!-- Contact status (online/offline) -->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -69,12 +69,12 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/answer_contant_date"
+                    android:id="@+id/answer_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginTop="10sp"
-                    android:text="date and time"
+                    android:text="contact status"
                     android:textColor="@color/grey_popup_text"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -131,25 +131,33 @@
                 android:src="@drawable/ic_location_symbol" />
         </LinearLayout>
 
-        <!-- Location message -->
+        <!-- Location message and time -->
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="350sp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_weight="20"
             android:background="@color/transparent"
-            android:orientation="horizontal" >
-
+            android:orientation="vertical" >
+			<!--  location message -->
             <TextView
                 android:id="@+id/answer_location"
                 style="@style/listHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:text="This is a location message"
                 android:textColor="@color/grey_popup_text"
                 android:textSize="20sp" />
+			<!--  Locatin time -->
+            <TextView
+                android:id="@+id/answer_location_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2sp"
+                android:text="Date and Time"
+                android:textColor="@color/grey_popup_text"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 

@@ -16,6 +16,7 @@
     <item name="grey_popup_text" type="color">#292929</item>
     <item name="grey_popup_border" type="color">#41636d</item>
     <item name="blue_facebook" type="color">#49639f</item>
+    <item name="test" type="color">#33000000</item>
     
    
     

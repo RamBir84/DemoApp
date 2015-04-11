@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.example.demoapp.NewHomeScreen;
 import com.example.demoapp.R;
+import com.example.demoapp.R.color;
 
 
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainListAdapter extends ArrayAdapter<ListItem> {
@@ -42,11 +44,16 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 
 			rowView = inflater.inflate(R.layout.new_list_item, parent, false);
 			
-			// Set the profile picture
+			// Set the profile picture(picture, position and status)
 			ImageButton profilePicture = (ImageButton) rowView.findViewById(R.id.listProfileImage);
-			Drawable profileImageAsDrawable = (profilePicture  != null) ? new BitmapDrawable(context.getResources(),
-					items.get(position).profile_pic) : context.getResources().getDrawable(R.drawable.default_profile_pic);
+			Drawable profileImageAsDrawable = new BitmapDrawable(context.getResources(), items.get(position).profile_pic);
 			profilePicture.setImageDrawable(profileImageAsDrawable);
+			profilePicture.setTag(new Integer(position));
+			if (items.get(position).icon_status == "offline"){
+				profilePicture.setId(5);
+			} else {
+				profilePicture.setId(1);
+			}
 			
 			// Set the contact name
 			TextView contantName = (TextView) rowView.findViewById(R.id.listContactName);
@@ -56,11 +63,10 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 			TextView Location = (TextView) rowView.findViewById(R.id.listLocation);
 			Location.setText(items.get(position).Location);
 
-			// Set the contact icon (can add here some other options/icons)
+			// Set the contact icon
 			ImageButton searchIcon = (ImageButton) rowView.findViewById(R.id.listIconImage);
 			Drawable IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_offline);
-			
-			// Set the position and ID for onClickListIcon method (have to fix the problem and change to switch)
+				// Set the position and ID for onClickListIcon method
 			if (items.get(position).icon_status == "online"){
 				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_online);
 				searchIcon.setTag(new Integer(position));
@@ -84,12 +90,15 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 								IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_offline);
 								searchIcon.setTag(new Integer(position));
 								searchIcon.setId(5);
+								contantName.setTextColor(color.medium_grey);
+								Location.setText(null);
 							}
 						}
 					}
 				}
 			searchIcon.setImageDrawable(IconImageAsDrawable);
+			
+			
 		return rowView;
 	}
-
 }

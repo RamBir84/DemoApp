@@ -5,7 +5,11 @@ import java.util.ArrayList;
 
 import com.example.demoapp.infrastructure.ListItem;
 import com.example.demoapp.infrastructure.MainListAdapter;
+import com.example.demoapp.infrastructure.TagByLocation;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +26,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -29,12 +35,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 
-public class NewHomeScreen extends Activity {
+public class NewHomeScreen extends Activity   {
+	// Design fields
 	private ListView mainContainer;
 	Button btnClosePopup;	
 	private PopupWindow pwindo;
 	private int position;
 	FrameLayout blur_layout;
+	
+	//Other fields
+	
+	
+	
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,20 +57,26 @@ public class NewHomeScreen extends Activity {
 
 		// Some data
 		ArrayList<ListItem> fakeData = new ArrayList<ListItem>();
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "answer_received", "ID"));
-		fakeData.add(new ListItem("", "Empty name", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_sent", "ID"));
-		fakeData.add(new ListItem("Empty message", "", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_received", "ID"));
-		fakeData.add(new ListItem("Or Bokobza 3", "Check without image",null, "online", "ID"));
-		fakeData.add(new ListItem("Or Bokobza4", "I am in the cafeteria", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "online", "ID"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
-		fakeData.add(new ListItem("Or Bokobza", "I am in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID"));
-
+		fakeData.add(new ListItem("Or Bokobza", "Last seen in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "answer_received", "ID", "10.04.15,  10:04"));
+		fakeData.add(new ListItem("Barr Solnik", "Last seen in the cafeteria", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_sent", "ID", "10.04.15,  12:00"));
+		fakeData.add(new ListItem("Ram Birbrayer", "Last seen in class L101", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_received", "ID", "10.04.15,  13:08"));
+		fakeData.add(new ListItem("Jesse Ritz", "Last seen in the main entrance",BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "online", "ID", "10.04.15,  14:04"));
+		fakeData.add(new ListItem("Clara Lutzky", "", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "online", "ID", ""));
+		fakeData.add(new ListItem("Maya Klein", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "09.04.15,  17:52"));
+		fakeData.add(new ListItem("Dotan Jaacobi", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "09.04.15,  14:34"));
+		fakeData.add(new ListItem("Irina Afanasyeva", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "08.04.15,  20:40"));
+		fakeData.add(new ListItem("Hagar Bass", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "09.04.15,  10:04"));
+		fakeData.add(new ListItem("Ariel Ben Moshe", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "08.04.15,  10:04"));
 		mainContainer = (ListView)findViewById(R.id.mainContainer);
 		ListAdapter listAdapter = new MainListAdapter(this, fakeData);
 		mainContainer.setAdapter(listAdapter);
+		//*End of design part*
+		
+		
+		if (!isMyServiceRunning(geofencingService.class)) {
+			startService(new Intent(getBaseContext(), geofencingService.class));
+		}
+
 	}
 
 
@@ -83,6 +101,10 @@ public class NewHomeScreen extends Activity {
 			Toast.makeText(this, "Location request was already sent" + position, Toast.LENGTH_SHORT).show(); // Request_sent
 		}
 		if (view.getId() == 3){
+			
+			
+			
+			
 			startActivity(new Intent(this, TagsScreen.class));
 			Toast.makeText(this, "*Open the tags screen*" + position, Toast.LENGTH_SHORT).show(); // Request_received
 		}
@@ -98,7 +120,13 @@ public class NewHomeScreen extends Activity {
 
 	// ListProfile Button
 	public void onClickListProfile(View view) {
+		position = (Integer)view.getTag();
+		initiatePopupWindow(view);
 		Toast.makeText(this, "Open contact profile", Toast.LENGTH_SHORT).show();	
+	}
+	
+	public void onClickMenuButton(View view) {
+		
 	}
 
 
@@ -123,6 +151,19 @@ public class NewHomeScreen extends Activity {
 		// Set the contact name
 		TextView contactName = (TextView) layout.findViewById(R.id.answer_contact_name);
 		contactName.setText(MainListAdapter.items.get(position).contact_name);
+		
+		// Set date and date
+		TextView contactDate = (TextView) layout.findViewById(R.id.answer_location_time);
+		contactDate.setText(MainListAdapter.items.get(position).tagDateTime);
+		
+		// Set status (online/offline) message
+		TextView contactStatus = (TextView) layout.findViewById(R.id.answer_status);
+		if (view.getId() == 5){
+			contactStatus.setText("User is currently Offline");
+		} else {
+			contactStatus.setText("User is currently Online");
+		}
+		
 
 		// Set the contact location
 		TextView Location = (TextView) layout.findViewById(R.id.answer_location);
@@ -134,7 +175,6 @@ public class NewHomeScreen extends Activity {
 				MainListAdapter.items.get(position).profile_pic);
 		profilePicture.setImageDrawable(profileImageAsDrawable);
 		
-
 	}
 	private OnClickListener cancel_button_click_listener = new OnClickListener() {
 		public void onClick(View v) {
@@ -143,5 +183,17 @@ public class NewHomeScreen extends Activity {
 			pwindo.dismiss();
 		}
 	};	
+	
+	
+	// check if the geofencingService is running
+	private boolean isMyServiceRunning(Class<geofencingService> serviceClass) {
+		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+			if (serviceClass.getName().equals(service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
+	}	
 
 }
