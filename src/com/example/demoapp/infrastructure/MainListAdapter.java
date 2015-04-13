@@ -13,11 +13,14 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainListAdapter extends ArrayAdapter<ListItem> {
 
@@ -32,7 +35,7 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 	 *        Array list of ListItem objects
 	 */
 	public MainListAdapter(Context context, ArrayList<ListItem> values) {
-		super(context, R.layout.list_header_blue, values); // fix that
+		super(context, R.layout.new_list_item, values); // fix that
 		this.context = context;
 		this.items = values;
 	}
@@ -56,9 +59,9 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 			}
 			
 			// Set the contact name
-			TextView contantName = (TextView) rowView.findViewById(R.id.listContactName);
-			contantName.setText(items.get(position).contact_name);
-
+			TextView contactName = (TextView) rowView.findViewById(R.id.listContactName);
+			contactName.setText(items.get(position).contact_name);
+			
 			// Set the contact location
 			TextView Location = (TextView) rowView.findViewById(R.id.listLocation);
 			Location.setText(items.get(position).Location);
@@ -66,38 +69,33 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 			// Set the contact icon
 			ImageButton searchIcon = (ImageButton) rowView.findViewById(R.id.listIconImage);
 			Drawable IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_offline);
+			searchIcon.setTag(new Integer(position));
 				// Set the position and ID for onClickListIcon method
 			if (items.get(position).icon_status == "online"){
-				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_online);
-				searchIcon.setTag(new Integer(position));
+				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_online_bg);
 				searchIcon.setId(1);
 			} else {
 				if (items.get(position).icon_status == "request_sent"){
 					IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_request_sent);
-					searchIcon.setTag(new Integer(position));
 					searchIcon.setId(2);
 				} else { 
 					if (items.get(position).icon_status == "request_received"){
-						IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_request_received);
-						searchIcon.setTag(new Integer(position));
+						IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_request_received_bg);
 						searchIcon.setId(3);
 					} else { 
 						if (items.get(position).icon_status == "answer_received"){
-							IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_answer_received);
-							searchIcon.setTag(new Integer(position));
+							IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_answer_received_bg);
 							searchIcon.setId(4);
 						} else {
 								IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_offline);
-								searchIcon.setTag(new Integer(position));
 								searchIcon.setId(5);
-								contantName.setTextColor(color.medium_grey);
+								contactName.setTextColor(color.medium_grey);
 								Location.setText(null);
 							}
 						}
 					}
 				}
 			searchIcon.setImageDrawable(IconImageAsDrawable);
-			
 			
 		return rowView;
 	}

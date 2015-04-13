@@ -171,15 +171,14 @@
         android:background="@color/transparent"
         android:orientation="vertical" >
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_close_popup"
-            android:layout_width="70dp"
+            android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="20sp"
-            android:background="@drawable/bcg_screen_color"
             android:orientation="horizontal"
-            android:text="Got It!" />
+            android:src="@drawable/ic_got_it" />
     </LinearLayout>
 
 </LinearLayout>

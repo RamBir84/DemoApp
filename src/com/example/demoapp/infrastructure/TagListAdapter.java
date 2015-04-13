@@ -30,7 +30,7 @@ public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 	 *        Array list of ListTagItem objects
 	 */
 	public TagListAdapter(Context context, ArrayList<ListTagItem> values) {
-		super(context, R.layout.list_header_blue, values); // fix that
+		super(context, R.layout.new_list_item, values); // fix that
 		this.context = context;
 		this.items = values;
 	}

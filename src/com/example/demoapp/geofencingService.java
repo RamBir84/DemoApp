@@ -68,7 +68,6 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
 	   mGoogleClient.connect();
-	  // Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
 	   return START_STICKY;
    }
 
@@ -145,11 +144,11 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		if (distance < geoRadius){
 			geoStatus = 1;
 			sendCheckInToServer(settings.getInt("uid", -4), onCampus);
-			Toast.makeText(this,"First : You are inside the IDC", Toast.LENGTH_LONG).show();
+			Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 		} else {
 			geoStatus = 2;
 			sendCheckInToServer(settings.getInt("uid", -4), !onCampus);
-			Toast.makeText(this, "First : You are outside the IDC", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 		}	
 	}
 	
@@ -169,9 +168,9 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	public void onLocationChanged(Location location) {
 		// the toast for the auto update
 		if (location != null) {
-			Toast.makeText(this,"Auto Location: "+location.getLatitude()+" : "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this,"Auto Location: "+location.getLatitude()+" : "+location.getLongitude(), Toast.LENGTH_SHORT).show();
 		} else {
-			Toast.makeText(this,"AUTO NULL", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this,"AUTO NULL", Toast.LENGTH_SHORT).show();
 			}
 	}	
 	
@@ -187,13 +186,13 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	public void doOnPostExecute(JSONObject jObj) {
 		try {
 			if (jObj.getInt("success") == 1){
-				Toast.makeText(this,"status was updated successfuly", Toast.LENGTH_LONG).show();
+		//		Toast.makeText(this,"status was updated successfuly", Toast.LENGTH_LONG).show();
 			}else {
-				Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
+		//		Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
+		//	Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
 		}
 	}
 }

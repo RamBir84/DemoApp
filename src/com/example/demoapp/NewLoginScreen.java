@@ -8,6 +8,19 @@ import android.widget.Toast;
 
 public class NewLoginScreen extends Activity {
 
+	/*
+	enum States {connected, online, sent}
+	States currentState;
+	
+	public void setState(States value) {
+		currentState = value;
+	}
+	
+	public States getState() {
+		return currentState;
+	}
+	*/
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_login_screen);
@@ -16,7 +29,6 @@ public class NewLoginScreen extends Activity {
 	
 	// Login Button
 	public void onClickLogin(View view){
-		Toast.makeText(this, "Open main screen", Toast.LENGTH_SHORT).show();	
 		startActivity(new Intent(this, NewHomeScreen.class));
 	}
 }
