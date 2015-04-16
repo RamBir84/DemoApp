@@ -3,10 +3,14 @@ package com.example.demoapp;
 
 import java.util.ArrayList;
 
+import com.example.demoapp.infrastructure.BitmapPosition;
 import com.example.demoapp.infrastructure.ListItem;
 import com.example.demoapp.infrastructure.MainListAdapter;
+import com.squareup.picasso.Picasso;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -15,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -29,9 +32,13 @@ import android.widget.Toast;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
@@ -46,6 +53,9 @@ public class NewHomeScreen extends Activity   {
 	LinearLayout searchBoxLayout;
 	EditText searchBox;
 	ListAdapter listAdapter;
+	MainListAdapter myAdapter;
+	public static Bitmap bitmap;
+
 
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,28 +67,30 @@ public class NewHomeScreen extends Activity   {
 
 		// Some data
 		fakeData = new ArrayList<ListItem>();
-		fakeData.add(new ListItem("Or Bokobza", "Last seen in the library", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "answer_received", "ID", "10.04.15,  10:04"));
-		fakeData.add(new ListItem("Barr Solnik", "Last seen in the cafeteria", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_sent", "ID", "10.04.15,  12:00"));
-		fakeData.add(new ListItem("Ram Birbrayer", "Last seen in class L101", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "request_received", "ID", "10.04.15,  13:08"));
-		fakeData.add(new ListItem("Jesse Ritz", "Last seen in the main entrance",BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "online", "ID", "10.04.15,  14:04"));
-		fakeData.add(new ListItem("Clara Lutzky", "", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "online", "ID", ""));
-		fakeData.add(new ListItem("Maya Klein", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "09.04.15,  17:52"));
-		fakeData.add(new ListItem("Dotan Jakoby", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "09.04.15,  14:34"));
-		fakeData.add(new ListItem("Irina Afanasyeva", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "08.04.15,  20:40"));
-		fakeData.add(new ListItem("Hagar Bass", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "09.04.15,  10:04"));
-		fakeData.add(new ListItem("Ariel Ben Moshe", "Last seen in some place", BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.profile_photo), "offline", "ID", "08.04.15,  10:04"));
+		fakeData.add(new ListItem("Or Bokobza", "Last seen in the library", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "answer_received", "ID", "10.04.15,  10:04", "IDC Herzliya"));
+		fakeData.add(new ListItem("Barr Solnik", "Last seen in the cafeteria", "http://sms.latestsms.in/wp-content/uploads/profile-pictures209.jpg", "request_sent", "ID", "10.04.15,  12:00", "IDC Herzliya"));
+		fakeData.add(new ListItem("Ram Birbrayer", "Last seen in class L101", "http://bestprofilepix.com/wp-content/uploads/2014/07/cool-smiling-girls-facebook-profile-pictures.jpg", "request_received", "ID", "10.04.15,  13:08", "IDC Herzliya"));
+		fakeData.add(new ListItem("Jesse Ritz", "Last seen in the main entrance","http://im2.peldata.com/bl7/66932/22bg.jpg", "online", "ID", "10.04.15,  14:04", "IDC Herzliya"));
+		fakeData.add(new ListItem("Clara Lutzky", "", "http://www.theprofilepictures.com/wp-content/uploads/2011/11/Boys-profile-pictures-facebook-7.jpg", "request_received", "ID", "", "IDC Herzliya"));
+		fakeData.add(new ListItem("Maya Klein", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "09.04.15,  17:52", "IDC Herzliya"));
+		fakeData.add(new ListItem("Dotan Jakoby", "Last seen in some place","http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "09.04.15,  14:34", "IDC Herzliya"));
+		fakeData.add(new ListItem("Irina Afanasyeva", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "08.04.15,  20:40", "IDC Herzliya"));
+		fakeData.add(new ListItem("Hagar Bass", "Last seen in some place","http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "09.04.15,  10:04", "IDC Herzliya"));
+		fakeData.add(new ListItem("Ariel Ben Moshe", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "08.04.15,  10:04", "IDC Herzliya"));
 		mainContainer = (ListView)findViewById(R.id.mainContainer);
 		listAdapter = new MainListAdapter(this, fakeData);
-		//*End of design part*
+
+		// Start geofencing service
 		if (!isMyServiceRunning(geofencingService.class)) {
 			startService(new Intent(getBaseContext(), geofencingService.class));
 		}
 
 		array_sort = new ArrayList<ListItem>(fakeData);
-
-		final MainListAdapter adapter=new MainListAdapter(this, array_sort); 
+		final MainListAdapter adapter = new MainListAdapter(this, array_sort); 
 		mainContainer.setAdapter(adapter);
+		myAdapter = adapter;
 
+		// Handeling search mode
 		textLength = 0;
 		searchBox = (EditText) findViewById(R.id.searchBox);
 		searchBox.addTextChangedListener(new TextWatcher()
@@ -116,7 +128,8 @@ public class NewHomeScreen extends Activity   {
 
 	// Menu Button
 	public void onClickMenu(View view){
-		Toast.makeText(this, "Open menu", Toast.LENGTH_SHORT).show();	
+		Toast.makeText(this, "Open menu", Toast.LENGTH_SHORT).show();
+		triggerNotification();
 	}
 
 	// Search Button
@@ -133,30 +146,34 @@ public class NewHomeScreen extends Activity   {
 	}
 
 	public void onClickListIcon(View view) {
-		position = (Integer)view.getTag();
-
-
+		position = ((BitmapPosition) view.getTag()).position;
 		if (view.getId() == 1){ // Online
 			view.setSelected(true);
 			Toast.makeText(this, "Location request was sent to: " + MainListAdapter.items.get(position).contact_name, Toast.LENGTH_SHORT).show(); 
 			view.setId(2);
 			MainListAdapter.items.get(position).icon_status = "request_sent";
+			myAdapter.notifyDataSetChanged();
+
 		} else { 
 			if (view.getId() == 2){ // Request_sent
 				Toast.makeText(this, "Location request was already sent", Toast.LENGTH_SHORT).show(); 
+				myAdapter.notifyDataSetChanged();
 			}
 		}
 		if (view.getId() == 3){ // Request_received
 			startActivity(new Intent(this, TagsScreen.class));
+			// Remove the above part when we manage to change the similar part in the tag screen
 			view.setSelected(true);
 			view.setId(1);
 			MainListAdapter.items.get(position).icon_status = "online";
+			myAdapter.notifyDataSetChanged();
 		}
 		if (view.getId() == 4){ // Answer_received
 			view.setSelected(true);
 			view.setId(1);
 			initiatePopupWindow(view);
 			MainListAdapter.items.get(position).icon_status = "online";
+			myAdapter.notifyDataSetChanged();
 		}
 		if (view.getId() == 5){ // Offline
 			Toast.makeText(this, "The user is currently not on campus", Toast.LENGTH_SHORT).show(); 
@@ -166,23 +183,18 @@ public class NewHomeScreen extends Activity   {
 
 	// ListProfile Button
 	public void onClickListProfile(View view) {
-		position = (Integer)view.getTag();
+		position = ((BitmapPosition) view.getTag()).position;
 		initiatePopupWindow(view);
 	}
 
-	public void onClickMenuButton(View view) {
-
-	}
 
 
 	// Profile popup
 	private void initiatePopupWindow(View view) {
 
 		// We need to get the instance of the LayoutInflater
-		LayoutInflater inflater = (LayoutInflater) NewHomeScreen.this
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View layout = inflater.inflate(R.layout.activity_answer_popup,
-				(ViewGroup) findViewById(R.id.popup_element));
+		LayoutInflater inflater = (LayoutInflater) NewHomeScreen.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.activity_answer_popup,(ViewGroup) findViewById(R.id.popup_element));
 
 		pwindo = new PopupWindow(layout, 700, 500, false);
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
@@ -201,12 +213,12 @@ public class NewHomeScreen extends Activity   {
 		TextView contactDate = (TextView) layout.findViewById(R.id.answer_location_time);
 		contactDate.setText(MainListAdapter.items.get(position).tagDateTime);
 
-		// Set status (online/offline) message
+		// Set status message
 		TextView contactStatus = (TextView) layout.findViewById(R.id.answer_status);
 		if (view.getId() == 5){
-			contactStatus.setText("User is currently Offline");
+			contactStatus.setText("User is currently not on campus");
 		} else {
-			contactStatus.setText("User is currently Online");
+			contactStatus.setText("User is currently on campus");
 		}
 
 
@@ -216,11 +228,12 @@ public class NewHomeScreen extends Activity   {
 
 		// Set the profile picture
 		ImageView profilePicture = (ImageView) layout.findViewById(R.id.answer_profile_picture);
-		Drawable profileImageAsDrawable = new BitmapDrawable(NewHomeScreen.this.getResources(),
-				MainListAdapter.items.get(position).profile_pic);
+		Drawable profileImageAsDrawable = new BitmapDrawable(NewHomeScreen.this.getResources(),((BitmapPosition) view.getTag()).bitmap);
 		profilePicture.setImageDrawable(profileImageAsDrawable);
-
+		Picasso.with(NewHomeScreen.this).load(MainListAdapter.items.get(position).profile_pic).into(profilePicture);
 	}
+
+
 	private OnClickListener cancel_button_click_listener = new OnClickListener() {
 		public void onClick(View v) {
 			// restore blur and enable layout
@@ -228,7 +241,6 @@ public class NewHomeScreen extends Activity   {
 			pwindo.dismiss();
 		}
 	};	
-
 
 	// check if the geofencingService is running
 	private boolean isMyServiceRunning(Class<geofencingService> serviceClass) {
@@ -240,5 +252,26 @@ public class NewHomeScreen extends Activity   {
 		}
 		return false;
 	}	
+
+	private void triggerNotification() {
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+		mBuilder.setSmallIcon(R.drawable.ic_notification);
+		mBuilder.setContentTitle("Waldo Notification!");
+		mBuilder.setContentText("Hi, This is a Test Notification");
+		mBuilder.setDefaults(Notification.DEFAULT_ALL);
+
+		Intent resultIntent = new Intent(this, TagsScreen.class);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(TagsScreen.class);
+
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// notificationID allows you to update the notification later on.
+		mNotificationManager.notify(123, mBuilder.build());
+	}
 
 }

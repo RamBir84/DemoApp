@@ -20,7 +20,7 @@ import com.example.demoapp.TagsScreen;
 public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 
 	private Context context;
-	private ArrayList<ListTagItem> items;
+	public static ArrayList<ListTagItem> items;
 
 	/**
 	 * Adapter for main list objects
@@ -30,7 +30,7 @@ public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 	 *        Array list of ListTagItem objects
 	 */
 	public TagListAdapter(Context context, ArrayList<ListTagItem> values) {
-		super(context, R.layout.new_list_item, values); // fix that
+		super(context, R.layout.new_list_item, values); 
 		this.context = context;
 		this.items = values;
 	}
@@ -44,7 +44,7 @@ public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 
 			// Set the tag content
 			TextView content = (TextView) rowView.findViewById(R.id.listTagContent);
-			content.setText(items.get(position).tag_content);
+			content.setText(items.get(position).tag);
 			
 			// Set the Item position
 			LinearLayout listItem = (LinearLayout) rowView.findViewById(R.id.tag_list_item);

@@ -3,8 +3,6 @@ package com.example.demoapp;
 import java.util.ArrayList;
 
 import com.example.demoapp.infrastructure.ListTagItem;
-import com.example.demoapp.infrastructure.MainListAdapter;
-import com.example.demoapp.infrastructure.TagByLocation;
 import com.example.demoapp.infrastructure.TagListAdapter;
 
 import android.app.Activity;
@@ -12,27 +10,19 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -43,7 +33,9 @@ public class TagsScreen extends Activity {
 	private PopupWindow pwindo;
 	FrameLayout blur_layout;
 	static Location userLocation;
-	ArrayList<TagByLocation> fakeTags;
+	ArrayList<ListTagItem> fakeTags;
+	String newTag;
+	EditText tagEdit;
 
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +43,8 @@ public class TagsScreen extends Activity {
 		setContentView(R.layout.activity_tags_screen);
 		blur_layout = (FrameLayout) findViewById(R.id.tagScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
-		;
+		
+		// Start geofencing service
 		if (!isMyServiceRunning(geofencingService.class)) {
 			startService(new Intent(getBaseContext(), geofencingService.class));
 		}
@@ -64,12 +57,12 @@ public class TagsScreen extends Activity {
 		locationValues.add(new double[]{32.16795678912813, 34.83754640445113});
 		locationValues.add(new double[]{32.16464638966391, 34.84786754474044});
 		locationValues.add(new double[]{32.164582814285744, 34.847985561937094});
-		fakeTags = new ArrayList<TagByLocation>();
+		fakeTags = new ArrayList<ListTagItem>();
 		for (int i = 0; i < locationValues.size(); i++) {
 			Location loc = new Location("i");
 			loc.setLatitude(locationValues.get(i)[0]);
 			loc.setLongitude(locationValues.get(i)[1]);
-			fakeTags.add(new TagByLocation("this is the " + i + " tag",loc));
+			fakeTags.add(new ListTagItem("this is the " + i + " tag",loc));
 		}
 		float radius = userLocation.getAccuracy();
 		Location tagLocation;
@@ -77,22 +70,26 @@ public class TagsScreen extends Activity {
 
 		for (int i = 0; i < fakeTags.size(); i++) {
 			tagLocation = fakeTags.get(i).tag_location;
-			if ((userLocation.distanceTo(tagLocation) - tagLocation.getAccuracy()) <= (radius + 50)){
-				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag + " Accuracy: " + radius + "  Distance to tag: " + userLocation.distanceTo(tagLocation)));
+			if ((userLocation.distanceTo(tagLocation) - tagLocation.getAccuracy()) <= (radius + 1000)){
+				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag + " Accuracy: " + radius + "  Distance to tag: " + userLocation.distanceTo(tagLocation), tagLocation));
 			}
 		}
 		mainTagContainer = (ListView)findViewById(R.id.mainTagContainer);
 		ListAdapter listAdapter = new TagListAdapter(this, tagsInUserLocation);
 		mainTagContainer.setAdapter(listAdapter);
+		
+		
+		for (int i = 0; i < fakeTags.size(); i++) {
+			System.out.println("tag: " + fakeTags.get(i).tag);
+			System.out.println("tag location: " + fakeTags.get(i).tag_location.getLatitude() + ", " + fakeTags.get(i).tag_location.getLongitude());
+		}
 
 	}
 
 	// Menu Button
 	public void onClickTagMenu(final View view) {
-		
 		Toast.makeText(this, "Open menu(Tag)", Toast.LENGTH_SHORT).show();	
 	}
-
 
 	// Search Button
 	public void onClickAdd(final View view) {
@@ -102,6 +99,7 @@ public class TagsScreen extends Activity {
 
 	// Tag Item
 	public void onClickItem(final View view) {
+		// **Have to Add - change the data to: data.icon_status = "online"
 		startActivity(new Intent(this, NewHomeScreen.class));
 		Toast.makeText(this, "Tag was sent", Toast.LENGTH_SHORT).show();	
 	}
@@ -121,6 +119,9 @@ public class TagsScreen extends Activity {
 		btnClosePopup.setOnClickListener(cancel_add_tag_click_listener);
 		btnSendTag = (ImageButton) layout.findViewById(R.id.btn_send_tag);
 		btnSendTag.setOnClickListener(send_tag_listener);
+		tagEdit = (EditText) layout.findViewById(R.id.searchBoxAdd);
+
+		
 		// blur background and disable layout
 		blur_layout.getForeground().setAlpha(190);
 		pwindo.setFocusable(true);
@@ -136,26 +137,18 @@ public class TagsScreen extends Activity {
 	
 	private OnClickListener send_tag_listener = new OnClickListener() {
 		public void onClick(View v) {
-			Toast.makeText(TagsScreen.this, "Tag Was Added", Toast.LENGTH_SHORT).show();	
+			// close popup and reset blur
 			blur_layout.getForeground().setAlpha(0); 
-			pwindo.dismiss();
+			pwindo.dismiss(); 
+			// Take tag string
+			String tag = (tagEdit.getText().toString());
+			Toast.makeText(TagsScreen.this, "Tag Was sent: " + tag, Toast.LENGTH_SHORT).show();
+			// update the tag details
 			userLocation = geofencingService.userLocation;
-			String tag = "test";
-			fakeTags.add(new TagByLocation(tag,userLocation));
-			
-			for (int i = 0; i < fakeTags.size(); i++) {
-				System.out.println("tag: " + fakeTags.get(i).tag);
-				System.out.println("tag location: " + fakeTags.get(i).tag_location.getLatitude() + ", " + fakeTags.get(i).tag_location.getLongitude());
-			}
+			fakeTags.add(new ListTagItem(tag,userLocation));
+			startActivity(new Intent(TagsScreen.this, NewHomeScreen.class));
 		}
 	};	
-	
-	
-	
-	
-	
-	
-	
 
 	// check if the geofencingService is running
 	private boolean isMyServiceRunning(Class<geofencingService> serviceClass) {

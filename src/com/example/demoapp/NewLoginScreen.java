@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class NewLoginScreen extends Activity {
@@ -30,5 +31,10 @@ public class NewLoginScreen extends Activity {
 	// Login Button
 	public void onClickLogin(View view){
 		startActivity(new Intent(this, NewHomeScreen.class));
+		
+		Spinner mySpinner=(Spinner) findViewById(R.id.spinner);
+		String text = mySpinner.getSelectedItem().toString();
+		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();	
+
 	}
 }
