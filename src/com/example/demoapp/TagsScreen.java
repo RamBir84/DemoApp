@@ -7,11 +7,16 @@ import com.example.demoapp.infrastructure.TagListAdapter;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,8 +67,14 @@ public class TagsScreen extends Activity {
 			Location loc = new Location("i");
 			loc.setLatitude(locationValues.get(i)[0]);
 			loc.setLongitude(locationValues.get(i)[1]);
-			fakeTags.add(new ListTagItem("this is the " + i + " tag",loc));
+			fakeTags.add(new ListTagItem("", loc));
 		}
+		fakeTags.get(0).tag = "In the library - first floor";
+		fakeTags.get(1).tag = "In the cafeteria";
+		fakeTags.get(2).tag = "In class L101";
+		fakeTags.get(3).tag = "In the main entrance";
+		fakeTags.get(4).tag = "In the miLAb class";
+		
 		float radius = userLocation.getAccuracy();
 		Location tagLocation;
 		ArrayList<ListTagItem> tagsInUserLocation = new ArrayList<ListTagItem>();
@@ -71,7 +82,7 @@ public class TagsScreen extends Activity {
 		for (int i = 0; i < fakeTags.size(); i++) {
 			tagLocation = fakeTags.get(i).tag_location;
 			if ((userLocation.distanceTo(tagLocation) - tagLocation.getAccuracy()) <= (radius + 1000)){
-				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag + " Accuracy: " + radius + "  Distance to tag: " + userLocation.distanceTo(tagLocation), tagLocation));
+				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag , tagLocation));
 			}
 		}
 		mainTagContainer = (ListView)findViewById(R.id.mainTagContainer);
@@ -88,7 +99,8 @@ public class TagsScreen extends Activity {
 
 	// Menu Button
 	public void onClickTagMenu(final View view) {
-		Toast.makeText(this, "Open menu(Tag)", Toast.LENGTH_SHORT).show();	
+		triggerNotification();
+		//Toast.makeText(this, "Open menu(Tag)", Toast.LENGTH_SHORT).show();	
 	}
 
 	// Search Button
@@ -160,5 +172,26 @@ public class TagsScreen extends Activity {
 		}
 		return false;
 	}	
+	
+	private void triggerNotification() {
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+		mBuilder.setSmallIcon(R.drawable.ic_notification);
+		mBuilder.setContentTitle("Waldo Notification!");
+		mBuilder.setContentText("Hi, This is a Test Notification");
+		mBuilder.setDefaults(Notification.DEFAULT_ALL);
+
+		Intent resultIntent = new Intent(this, TagsScreen.class);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(TagsScreen.class);
+
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// notificationID allows you to update the notification later on.
+		mNotificationManager.notify(123, mBuilder.build());
+	}
 }
 

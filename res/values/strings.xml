@@ -6,14 +6,15 @@
     <string name="action_search">action_search</string>
     <string name="action_settings">action_settings</string>
     <string name="school_prompt">Choose your school</string>
-    
-        <string-array name="schools_list">
-        <item>Choose Your School </item>    
+
+    <string-array name="schools_list">
+        <item>Choose Your School </item>
         <item>IDC Herzliya</item>
         <item>Tel Aviv University</item>
         <item>Ben Gurion University</item>
         <item>Technion</item>
         <item>Bar Ilan University</item>
     </string-array>
+
 
 </resources>
