@@ -30,20 +30,19 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 	public MainListAdapter(Context context, ArrayList<ListItem> values) {
 		super(context, R.layout.new_list_item, values); 
 		this.context = context;
-		this.items = values;
+		items = values;
 	}
 
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = null;
-			rowView = inflater.inflate(R.layout.new_list_item, parent, false);
+		View rowView = inflater.inflate(R.layout.new_list_item, parent, false);
 			
 		    
-			 // Set the profile picture(picture, position and status)
+			// Set the profile picture(picture, position and status)
 			CircleImageView profilePicture = (CircleImageView) rowView.findViewById(R.id.listProfileImage);
-		    profilePicture.setTag(new Integer(position));
+		    profilePicture.setTag(Integer.valueOf(position));
 		    ExtendedTarget loadtarget = new ExtendedTarget(profilePicture);
 		    Picasso.with(context).load(items.get(position).profile_pic).into(loadtarget);
 			profilePicture.setTag(loadtarget.refButton.getTag());
@@ -115,7 +114,7 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 		public void onBitmapLoaded(Bitmap b, LoadedFrom arg1) {
 			Drawable profileImageAsDrawable = new BitmapDrawable(context.getResources(), b);
 			refButton.setImageDrawable(profileImageAsDrawable);
-			refButton.setTag(new BitmapPosition(b, (int) refButton.getTag())); // Put the bitmap and the position in refButton
+			refButton.setTag(new BitmapPosition(b, (Integer) refButton.getTag())); // Put the bitmap and the position in refButton
 		}
 		@Override
 		public void onPrepareLoad(Drawable arg0) {

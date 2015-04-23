@@ -6,14 +6,23 @@
     <string name="action_search">action_search</string>
     <string name="action_settings">action_settings</string>
     <string name="school_prompt">Choose your school</string>
+<<<<<<< HEAD
+    <string name="add_tag_close_btn">Add Tag close button</string>
+    <string name="add_tag_send_btn">Add Tag send button</string>
     
         <string-array name="schools_list">
         <item>Choose Your School </item>    
+=======
+
+    <string-array name="schools_list">
+        <item>Choose Your School </item>
+>>>>>>> origin/master
         <item>IDC Herzliya</item>
         <item>Tel Aviv University</item>
         <item>Ben Gurion University</item>
         <item>Technion</item>
         <item>Bar Ilan University</item>
     </string-array>
+
 
 </resources>

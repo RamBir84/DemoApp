@@ -73,7 +73,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 
 			//Test print
-			System.out.println(httpMethod.toString());
+			Log.v("http_to_server", httpMethod.toString());
 			
 			// execute
 			httpResponse = httpClient.execute(httpMethod);
@@ -101,16 +101,15 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 			if (success == 1) {
 				isRequestSucceeded = true;
-				Log.d("MiLAB Class", "Request succeeded: " + json.toString());
+				Log.d("DemoApp", "Request succeeded: " + json.toString());
 			} else {
 				// failed to update product
-				Log.d("MiLAB Class", "Request failed" + json.toString());
+				Log.d("DemoApp", "Request failed" + json.toString());
 			}
 		} catch (Exception e) {
-			Log.d("MiLAB Class", "Request failed");
+			Log.d("DemoApp", "Request failed" + e);
 			e.printStackTrace();
 		}
-
 		return isRequestSucceeded;
 	}
 
@@ -124,9 +123,10 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 			parentActivity.doOnPostExecute(jObj);
 		} else {
 			CharSequence text = "Send Data Faild!";
-			int duration = Toast.LENGTH_SHORT;
-			//Toast toast = Toast.makeText((Context) parentActivity, text, duration);
-			//toast.show();
+			int duration = Toast.LENGTH_LONG;
+			Toast toast = Toast.makeText((Context) parentActivity, text, duration);
+			toast.show();
+			Log.v("Server_Comm", text + requestParams.toString());
 		}
 	}
 

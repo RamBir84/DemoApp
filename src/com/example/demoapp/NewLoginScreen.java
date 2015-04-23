@@ -30,11 +30,13 @@ public class NewLoginScreen extends Activity {
 	
 	// Login Button
 	public void onClickLogin(View view){
-		startActivity(new Intent(this, NewHomeScreen.class));
+		Intent child = new Intent(this, NewHomeScreen.class);
+		startActivity(child);
 		
 		Spinner mySpinner=(Spinner) findViewById(R.id.spinner);
 		String text = mySpinner.getSelectedItem().toString();
 		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();	
-
+		
+		finish();
 	}
 }

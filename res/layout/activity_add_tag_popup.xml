@@ -13,14 +13,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:weightSum="100" >
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btn_close_add_Tag"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_gravity="top|left"
+            android:contentDescription="@string/add_tag_close_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="top|start"
             android:background="@color/transparent"
             android:src="@drawable/ic_exit_button_popup" />
     </LinearLayout>
@@ -39,7 +39,7 @@
             android:layout_height="30dp"
             android:layout_weight="50"
             android:background="@color/transparent"
-            android:gravity="center|left"
+            android:gravity="center|start"
             android:orientation="vertical" >
 
             <TextView
@@ -64,7 +64,7 @@
             <EditText
                 android:id="@+id/searchBoxAdd"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:hint="Where Are You?!" >
             </EditText>
@@ -82,6 +82,7 @@
 
         <ImageButton
             android:id="@+id/btn_send_tag"
+            android:contentDescription="@string/add_tag_send_btn"
             android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_gravity="center"

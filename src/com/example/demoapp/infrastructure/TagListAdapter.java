@@ -3,19 +3,14 @@ package com.example.demoapp.infrastructure;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.demoapp.R;
-import com.example.demoapp.TagsScreen;
 
 public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 
@@ -32,15 +27,13 @@ public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 	public TagListAdapter(Context context, ArrayList<ListTagItem> values) {
 		super(context, R.layout.new_list_item, values); 
 		this.context = context;
-		this.items = values;
+		items = values;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = null;
-
-			rowView = inflater.inflate(R.layout.list_tag_item, parent, false);
+		View rowView = inflater.inflate(R.layout.list_tag_item, parent, false);
 
 			// Set the tag content
 			TextView content = (TextView) rowView.findViewById(R.id.listTagContent);
@@ -48,7 +41,7 @@ public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 			
 			// Set the Item position
 			LinearLayout listItem = (LinearLayout) rowView.findViewById(R.id.tag_list_item);
-			listItem.setTag(new Integer(position));
+			listItem.setTag(Integer.valueOf(position));
 			
 		return rowView;
 	}

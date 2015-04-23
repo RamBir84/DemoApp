@@ -2,16 +2,28 @@ package com.example.demoapp;
 
 import java.util.ArrayList;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.example.demoapp.helpers.ServerAsyncParent;
+import com.example.demoapp.helpers.ServerCommunicator;
 import com.example.demoapp.infrastructure.ListTagItem;
 import com.example.demoapp.infrastructure.TagListAdapter;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +38,7 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 
-public class TagsScreen extends Activity {
+public class TagsScreen extends Activity implements ServerAsyncParent {
 	private ListView mainTagContainer;
 	public static boolean isOnline = false;
 	ImageButton btnClosePopup, btnSendTag;	
@@ -62,8 +74,14 @@ public class TagsScreen extends Activity {
 			Location loc = new Location("i");
 			loc.setLatitude(locationValues.get(i)[0]);
 			loc.setLongitude(locationValues.get(i)[1]);
-			fakeTags.add(new ListTagItem("this is the " + i + " tag",loc));
+			fakeTags.add(new ListTagItem("", loc));
 		}
+		fakeTags.get(0).tag = "In the library - first floor";
+		fakeTags.get(1).tag = "In the cafeteria";
+		fakeTags.get(2).tag = "In class L101";
+		fakeTags.get(3).tag = "In the main entrance";
+		fakeTags.get(4).tag = "In the miLAb class";
+		
 		float radius = userLocation.getAccuracy();
 		Location tagLocation;
 		ArrayList<ListTagItem> tagsInUserLocation = new ArrayList<ListTagItem>();
@@ -71,7 +89,7 @@ public class TagsScreen extends Activity {
 		for (int i = 0; i < fakeTags.size(); i++) {
 			tagLocation = fakeTags.get(i).tag_location;
 			if ((userLocation.distanceTo(tagLocation) - tagLocation.getAccuracy()) <= (radius + 1000)){
-				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag + " Accuracy: " + radius + "  Distance to tag: " + userLocation.distanceTo(tagLocation), tagLocation));
+				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag , tagLocation));
 			}
 		}
 		mainTagContainer = (ListView)findViewById(R.id.mainTagContainer);
@@ -86,16 +104,23 @@ public class TagsScreen extends Activity {
 
 	}
 
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		finish();
+	}
+	
 	// Menu Button
 	public void onClickTagMenu(final View view) {
-		Toast.makeText(this, "Open menu(Tag)", Toast.LENGTH_SHORT).show();	
+		triggerNotification();
+		//Toast.makeText(this, "Open menu(Tag)", Toast.LENGTH_SHORT).show();	
 	}
 
 	// Search Button
 	public void onClickAdd(final View view) {
 		initiatePopupWindow();
 	}
-
 
 	// Tag Item
 	public void onClickItem(final View view) {
@@ -108,10 +133,8 @@ public class TagsScreen extends Activity {
 	private void initiatePopupWindow() {
 
 		// We need to get the instance of the LayoutInflater
-		LayoutInflater inflater = (LayoutInflater) TagsScreen.this
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View layout = inflater.inflate(R.layout.activity_add_tag_popup,
-				(ViewGroup) findViewById(R.id.add_tag_popup));
+		LayoutInflater inflater = (LayoutInflater) TagsScreen.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.activity_add_tag_popup, (ViewGroup) findViewById(R.id.add_tag_popup));
 
 		pwindo = new PopupWindow(layout, 700, 500, false);
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
@@ -127,10 +150,12 @@ public class TagsScreen extends Activity {
 		pwindo.setFocusable(true);
 		pwindo.update();
 	}
+	
 	private OnClickListener cancel_add_tag_click_listener = new OnClickListener() {
 		public void onClick(View v) {
 			// restore blur and enable layout
 			blur_layout.getForeground().setAlpha(0); 
+			pwindo.showAsDropDown((View) v.getParent());
 			pwindo.dismiss();
 		}
 	};	
@@ -140,15 +165,22 @@ public class TagsScreen extends Activity {
 			// close popup and reset blur
 			blur_layout.getForeground().setAlpha(0); 
 			pwindo.dismiss(); 
-			// Take tag string
+			
+			// Take tag name
 			String tag = (tagEdit.getText().toString());
-			Toast.makeText(TagsScreen.this, "Tag Was sent: " + tag, Toast.LENGTH_SHORT).show();
-			// update the tag details
+			
+			// Get current location for the tag
 			userLocation = geofencingService.userLocation;
+			
+			// Send the tag
+			sendTag(tag, userLocation);
+			Toast.makeText(TagsScreen.this, "Tag Was sent: " + tag, Toast.LENGTH_SHORT).show();
+			
 			fakeTags.add(new ListTagItem(tag,userLocation));
 			startActivity(new Intent(TagsScreen.this, NewHomeScreen.class));
+			finish();
 		}
-	};	
+	};
 
 	// check if the geofencingService is running
 	private boolean isMyServiceRunning(Class<geofencingService> serviceClass) {
@@ -159,6 +191,59 @@ public class TagsScreen extends Activity {
 			}
 		}
 		return false;
+<<<<<<< HEAD
+	}
+	
+	public void sendTag(String tag, Location tagLocation) {
+		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+				
+		params.add(new BasicNameValuePair("name", tag));
+		params.add(new BasicNameValuePair("latitude", Double.toString(tagLocation.getLatitude())));
+		params.add(new BasicNameValuePair("longitude", Double.toString(tagLocation.getLongitude())));
+		params.add(new BasicNameValuePair("altitude", Double.toString(tagLocation.getAltitude())));
+		params.add(new BasicNameValuePair("bearing", Float.toString(tagLocation.getBearing())));
+		params.add(new BasicNameValuePair("accuracy", Float.toString(tagLocation.getAccuracy())));
+		params.add(new BasicNameValuePair("timestamp", Long.toString(tagLocation.getTime())));
+		new ServerCommunicator(this, params, ServerCommunicator.METHOD_POST)
+				.execute("http://ram.milab.idc.ac.il/app_send_tag.php");
+	}
+
+	@Override
+	public void doOnPostExecute(JSONObject jObj) {
+		// TODO Auto-generated method stub
+		
+		try {
+			if (jObj.getInt("success") == 1){
+				Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
+			}else {
+				Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+=======
 	}	
+	
+	private void triggerNotification() {
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+		mBuilder.setSmallIcon(R.drawable.ic_notification);
+		mBuilder.setContentTitle("Waldo Notification!");
+		mBuilder.setContentText("Hi, This is a Test Notification");
+		mBuilder.setDefaults(Notification.DEFAULT_ALL);
+
+		Intent resultIntent = new Intent(this, TagsScreen.class);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(TagsScreen.class);
+
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// notificationID allows you to update the notification later on.
+		mNotificationManager.notify(123, mBuilder.build());
+>>>>>>> origin/master
+	}
 }
 

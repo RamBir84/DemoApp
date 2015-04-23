@@ -3,32 +3,6 @@ package com.example.demoapp;
 
 import java.util.ArrayList;
 
-import com.example.demoapp.infrastructure.BitmapPosition;
-import com.example.demoapp.infrastructure.ListItem;
-import com.example.demoapp.infrastructure.MainListAdapter;
-import com.squareup.picasso.Picasso;
-
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -41,6 +15,50 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
+<<<<<<< HEAD
+
+import com.example.demoapp.infrastructure.BitmapPosition;
+import com.example.demoapp.infrastructure.ListItem;
+import com.example.demoapp.infrastructure.MainListAdapter;
+import com.squareup.picasso.Picasso;
+=======
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+>>>>>>> origin/master
 
 public class NewHomeScreen extends Activity   {
 	// Design fields
@@ -55,6 +73,7 @@ public class NewHomeScreen extends Activity   {
 	ListAdapter listAdapter;
 	MainListAdapter myAdapter;
 	public static Bitmap bitmap;
+	private static final int SETTINGS_RESULT = 1;
 
 
 
@@ -64,15 +83,15 @@ public class NewHomeScreen extends Activity   {
 		blur_layout = (FrameLayout) findViewById(R.id.newScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
 		searchBoxLayout = (LinearLayout) findViewById(R.id.topBarMain);
-
+		
 		// Some data
 		fakeData = new ArrayList<ListItem>();
-		fakeData.add(new ListItem("Or Bokobza", "Last seen in the library", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "answer_received", "ID", "10.04.15,  10:04", "IDC Herzliya"));
-		fakeData.add(new ListItem("Barr Solnik", "Last seen in the cafeteria", "http://sms.latestsms.in/wp-content/uploads/profile-pictures209.jpg", "request_sent", "ID", "10.04.15,  12:00", "IDC Herzliya"));
-		fakeData.add(new ListItem("Ram Birbrayer", "Last seen in class L101", "http://bestprofilepix.com/wp-content/uploads/2014/07/cool-smiling-girls-facebook-profile-pictures.jpg", "request_received", "ID", "10.04.15,  13:08", "IDC Herzliya"));
+		fakeData.add(new ListItem("Or Bokobza", "Last seen in the library", "http://a2zhdwallpapers.com/wp-content/uploads/ktzbulkwallpaper-1423499592/profile-dp-for-boys-facebook-6.jpg", "answer_received", "ID", "10.04.15,  10:04", "IDC Herzliya"));
+		fakeData.add(new ListItem("Clara Lutzky", "Last seen in the cafeteria", "http://sms.latestsms.in/wp-content/uploads/profile-pictures209.jpg", "request_sent", "ID", "10.04.15,  12:00", "IDC Herzliya"));
+		fakeData.add(new ListItem("Ram Birbrayer", "Last seen in class L101", "http://wallpaperszoo.com/wp-content/uploads/2014/02/cool-profile-pictures-for-boys-on-facebook-9.jpg", "request_received", "ID", "10.04.15,  13:08", "IDC Herzliya"));
 		fakeData.add(new ListItem("Jesse Ritz", "Last seen in the main entrance","http://im2.peldata.com/bl7/66932/22bg.jpg", "online", "ID", "10.04.15,  14:04", "IDC Herzliya"));
-		fakeData.add(new ListItem("Clara Lutzky", "", "http://www.theprofilepictures.com/wp-content/uploads/2011/11/Boys-profile-pictures-facebook-7.jpg", "request_received", "ID", "", "IDC Herzliya"));
-		fakeData.add(new ListItem("Maya Klein", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "09.04.15,  17:52", "IDC Herzliya"));
+		fakeData.add(new ListItem("Barr Solnik", "", "http://www.theprofilepictures.com/wp-content/uploads/2011/11/Boys-profile-pictures-facebook-7.jpg", "request_received", "ID", "", "IDC Herzliya"));
+		fakeData.add(new ListItem("Maya Klein", "Last seen in some place", "http://www.trickspk.com/wp-content/uploads/2015/01/cute-girls-profile-photo-for-facebook-4-e851c.jpg", "offline", "ID", "09.04.15,  17:52", "IDC Herzliya"));
 		fakeData.add(new ListItem("Dotan Jakoby", "Last seen in some place","http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "09.04.15,  14:34", "IDC Herzliya"));
 		fakeData.add(new ListItem("Irina Afanasyeva", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "08.04.15,  20:40", "IDC Herzliya"));
 		fakeData.add(new ListItem("Hagar Bass", "Last seen in some place","http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "09.04.15,  10:04", "IDC Herzliya"));
@@ -126,10 +145,22 @@ public class NewHomeScreen extends Activity   {
 		});
 	}
 
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		finish();
+	}
+	
+	
 	// Menu Button
 	public void onClickMenu(View view){
 		Toast.makeText(this, "Open menu", Toast.LENGTH_SHORT).show();
-		triggerNotification();
+	//	triggerNotification();
+		//*********
+		Intent i = new Intent(getApplicationContext(), SettingsScreen.class);
+        startActivityForResult(i, SETTINGS_RESULT);
 	}
 
 	// Search Button
@@ -145,6 +176,7 @@ public class NewHomeScreen extends Activity   {
 		searchBoxLayout.setVisibility(View.VISIBLE);
 	}
 
+	// Icon button
 	public void onClickListIcon(View view) {
 		position = ((BitmapPosition) view.getTag()).position;
 		if (view.getId() == 1){ // Online
@@ -186,7 +218,6 @@ public class NewHomeScreen extends Activity   {
 		position = ((BitmapPosition) view.getTag()).position;
 		initiatePopupWindow(view);
 	}
-
 
 
 	// Profile popup
@@ -253,25 +284,8 @@ public class NewHomeScreen extends Activity   {
 		return false;
 	}	
 
-	private void triggerNotification() {
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-		mBuilder.setSmallIcon(R.drawable.ic_notification);
-		mBuilder.setContentTitle("Waldo Notification!");
-		mBuilder.setContentText("Hi, This is a Test Notification");
-		mBuilder.setDefaults(Notification.DEFAULT_ALL);
 
-		Intent resultIntent = new Intent(this, TagsScreen.class);
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		stackBuilder.addParentStack(TagsScreen.class);
-
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
-
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// notificationID allows you to update the notification later on.
-		mNotificationManager.notify(123, mBuilder.build());
-	}
+	
+	
 
 }
