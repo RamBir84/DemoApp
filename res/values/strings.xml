@@ -9,9 +9,9 @@
 <<<<<<< HEAD
     <string name="add_tag_close_btn">Add Tag close button</string>
     <string name="add_tag_send_btn">Add Tag send button</string>
-    
-        <string-array name="schools_list">
-        <item>Choose Your School </item>    
+
+    <string-array name="schools_list">
+        <item>Choose Your School </item>
 =======
 
     <string-array name="schools_list">

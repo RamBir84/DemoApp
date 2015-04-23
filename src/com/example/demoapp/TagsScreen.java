@@ -245,5 +245,26 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		mNotificationManager.notify(123, mBuilder.build());
 >>>>>>> origin/master
 	}
+	
+	private void triggerNotification() {
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+		mBuilder.setSmallIcon(R.drawable.ic_notification);
+		mBuilder.setContentTitle("Waldo Notification!");
+		mBuilder.setContentText("Hi, This is a Test Notification");
+		mBuilder.setDefaults(Notification.DEFAULT_ALL);
+
+		Intent resultIntent = new Intent(this, TagsScreen.class);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(TagsScreen.class);
+
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// notificationID allows you to update the notification later on.
+		mNotificationManager.notify(123, mBuilder.build());
+	}
 }
 
