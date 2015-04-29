@@ -36,15 +36,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.15"
                 android:gravity="center"
-                android:onClick="onClickTagMenu"
                 android:orientation="vertical" >
+                <!-- android:onClick="onClickTagMenu" -->
 
                 <ImageView
                     android:id="@+id/tag_menu_button"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:background="@drawable/icon_bg"
-                    android:src="@drawable/ic_menu_button" />
+                    android:src="@color/white" />
             </LinearLayout>
 
             <!-- logo -->

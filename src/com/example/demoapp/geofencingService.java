@@ -143,11 +143,11 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		// update the geofence status
 		if (distance < geoRadius){
 			geoStatus = 1;
-			sendCheckInToServer(settings.getInt("uid", -4), onCampus);
+			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
 			Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 		} else {
 			geoStatus = 2;
-			sendCheckInToServer(settings.getInt("uid", -4), !onCampus);
+			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
 			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 		}	
 	}
@@ -174,10 +174,10 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 			}
 	}	
 	
-	public void sendCheckInToServer(int userId, boolean onCampus ) {
+	public void sendCheckInToServer(String userId, boolean onCampus ) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("userId", Integer.toString(userId)));
-		params.add(new BasicNameValuePair("onCampus", Integer.toString(onCampus? 1 : 2)));
+		params.add(new BasicNameValuePair("userId", userId));
+		params.add(new BasicNameValuePair("onCampus", Integer.toString(onCampus? 1 : 0)));
 		new ServerCommunicator(this, params, ServerCommunicator.METHOD_POST)
 				.execute("http://ram.milab.idc.ac.il/app_send_chekin.php");
 	}

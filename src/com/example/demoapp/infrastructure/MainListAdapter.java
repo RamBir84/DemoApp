@@ -47,7 +47,7 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 		    Picasso.with(context).load(items.get(position).profile_pic).into(loadtarget);
 			profilePicture.setTag(loadtarget.refButton.getTag());
 			
-			if (items.get(position).icon_status == "offline"){
+			if (items.get(position).icon_status == IconStatus.offline){
 				profilePicture.setId(5);
 			} else {
 				profilePicture.setId(1);
@@ -69,19 +69,47 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 			searchIcon.setTag(loadtarget.refButton.getTag());
 			searchIcon.setTag(new BitmapPosition(null, position));
 				// Set the position and ID for onClickListIcon method
-			if (items.get(position).icon_status == "online"){
+			
+			switch (items.get(position).icon_status) {
+			case online:
+				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_online_bg);
+				searchIcon.setId(1);
+				break;
+			
+			case request_sent:
+				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_request_sent);
+				searchIcon.setId(2);
+				break;
+			
+			case request_received:
+				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_request_received_bg);
+				searchIcon.setId(3);
+				break;
+				
+			case answer_received:
+				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_answer_received_bg);
+				searchIcon.setId(4);
+				break;
+			default:
+				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_offline);
+				searchIcon.setId(5);
+				contactName.setTextColor(color.medium_grey);
+				Location.setText(null);
+				break;
+			}
+			/*if (items.get(position).icon_status == IconStatus.online){
 				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_online_bg);
 				searchIcon.setId(1);
 			} else {
-				if (items.get(position).icon_status == "request_sent"){
+				if (items.get(position).icon_status == IconStatus.request_sent){
 					IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_request_sent);
 					searchIcon.setId(2);
 				} else { 
-					if (items.get(position).icon_status == "request_received"){
+					if (items.get(position).icon_status == IconStatus.request_received){
 						IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_request_received_bg);
 						searchIcon.setId(3);
 					} else { 
-						if (items.get(position).icon_status == "answer_received"){
+						if (items.get(position).icon_status == IconStatus.answer_received){
 							IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_answer_received_bg);
 							searchIcon.setId(4);
 						} else {
@@ -92,7 +120,7 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 							}
 						}
 					}
-				}
+				}*/
 			searchIcon.setImageDrawable(IconImageAsDrawable);
 			
 		return rowView;

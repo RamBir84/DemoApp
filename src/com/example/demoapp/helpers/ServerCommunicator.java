@@ -26,7 +26,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 	public static final String METHOD_POST = "POST";
 	public static final String METHOD_GET = "GET";
 
-	private ProgressDialog dialog;
+	//private ProgressDialog dialog;
 
 	// URL to update user status
 	private final String method;
@@ -39,7 +39,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 	public ServerCommunicator(ServerAsyncParent activity, List<NameValuePair> params, String method) {
 		parentActivity = activity;
-		dialog = new ProgressDialog((Context) parentActivity);
+		//dialog = new ProgressDialog((Context) parentActivity);
 		this.requestParams = params;
 		this.method = method;
 	}
@@ -101,13 +101,13 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 			if (success == 1) {
 				isRequestSucceeded = true;
-				Log.d("DemoApp", "Request succeeded: " + json.toString());
+				Log.d("DemoApp_ServerComm", "Request succeeded: " + json.toString());
 			} else {
 				// failed to update product
-				Log.d("DemoApp", "Request failed" + json.toString());
+				Log.d("DemoApp_ServerComm", "Request failed" + json.toString());
 			}
 		} catch (Exception e) {
-			Log.d("DemoApp", "Request failed" + e);
+			Log.d("DemoApp_ServerComm", "Request failed" + e);
 			e.printStackTrace();
 		}
 		return isRequestSucceeded;
@@ -115,17 +115,17 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean isRequestSucceeded) {
-		if (dialog.isShowing()) {
+		/*if (dialog.isShowing()) {
 			dialog.dismiss();
-		}
+		}*/
 
 		if (isRequestSucceeded) {
 			parentActivity.doOnPostExecute(jObj);
 		} else {
 			CharSequence text = "Send Data Faild!";
-			int duration = Toast.LENGTH_LONG;
+			/*int duration = Toast.LENGTH_LONG;
 			Toast toast = Toast.makeText((Context) parentActivity, text, duration);
-			toast.show();
+			toast.show();*/
 			Log.v("Server_Comm", text + requestParams.toString());
 		}
 	}

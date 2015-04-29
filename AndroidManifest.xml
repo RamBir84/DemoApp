@@ -10,7 +10,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- for GCM -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -25,6 +25,7 @@
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <!-- For FaceBook -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -36,7 +37,10 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="@string/app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationName"
+            android:value="@string/facebook_app_name" />
 
         <!-- Activities -->
         <activity
@@ -65,10 +69,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-                <activity
+        <activity
             android:name="com.example.demoapp.SettingsScreen"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.example.demoapp.FacebookLogInActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- Services -->
         <service
@@ -76,6 +90,19 @@
             android:enabled="true" >
         </service>
         <service android:name=".geofencingService" />
+
+        <!-- for FB -->
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider421560734690363"
+            android:exported="true" />
+
+        <receiver android:name="com.example.demoapp.FacebookLogInBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.facebook.platform.AppCallResultBroadcast" />
+            </intent-filter>
+        </receiver>
+
         <!-- for GCM -->
         <receiver
             android:name=".GcmBroadcastReceiver"
