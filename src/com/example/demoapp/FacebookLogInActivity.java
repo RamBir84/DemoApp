@@ -20,6 +20,14 @@
 
 package com.example.demoapp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,37 +44,34 @@ import android.widget.TextView;
 
 import com.example.demoapp.helpers.ServerAsyncParent;
 import com.example.demoapp.helpers.ServerCommunicator;
-import com.facebook.*;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
-import com.facebook.share.internal.ShareInternalUtility;
+import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
 public class FacebookLogInActivity extends FragmentActivity implements ServerAsyncParent{
 
     private static final String PERMISSION = "publish_actions";
-    private static final Location SEATTLE_LOCATION = new Location("") {
+    /*private static final Location SEATTLE_LOCATION = new Location("") {
         {
             setLatitude(47.6097);
             setLongitude(-122.3331);
         }
-    };
+    };*/
 
     private final String PENDING_ACTION_BUNDLE_KEY = "com.facebook.samples.hellofacebook:PendingAction";
     

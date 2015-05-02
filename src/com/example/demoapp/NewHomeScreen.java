@@ -195,6 +195,10 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	
 	
 	public void onDataLoadeFromServer(ArrayList<ListItem> listOfUsers) {
+		/**----------------------    TEST    ------------------------**/
+		listOfUsers.get(1).icon_status = IconStatus.request_received;
+		/**----------------------    TEST    ------------------------**/
+		
 		
 		userData = listOfUsers;
 		updatedUserData = new ArrayList<ListItem>(userData);

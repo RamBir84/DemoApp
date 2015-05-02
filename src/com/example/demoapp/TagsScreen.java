@@ -9,8 +9,11 @@ import org.json.JSONObject;
 
 import com.example.demoapp.helpers.ServerAsyncParent;
 import com.example.demoapp.helpers.ServerCommunicator;
+import com.example.demoapp.infrastructure.ListItem;
 import com.example.demoapp.infrastructure.ListTagItem;
+import com.example.demoapp.infrastructure.MainListAdapter;
 import com.example.demoapp.infrastructure.TagListAdapter;
+import com.example.demoapp.infrastructure.TagListCreator;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -49,6 +52,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	String newTag;
 	EditText tagEdit;
 	int position;
+	//boolean tagListReady = false;
 
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +66,10 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 			startService(new Intent(getBaseContext(), geofencingService.class));
 		}
 		userLocation = geofencingService.userLocation;
+		
+		new TagListCreator(userLocation, this);
 
-		// Fake tags data
+/*		// Fake tags data
 		ArrayList<double[]> locationValues = new ArrayList<double[]>();
 		locationValues.add(new double[]{32.164573732085216, 34.846692737191916});
 		locationValues.add(new double[]{32.164941560481445, 34.84806066378951});
@@ -82,7 +88,33 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		fakeTags.get(2).tag = "In class L101";
 		fakeTags.get(3).tag = "In the main entrance";
 		fakeTags.get(4).tag = "In the miLAb class";
+		*/
 		
+		/*float radius = userLocation.getAccuracy();
+		Location tagLocation;
+		ArrayList<ListTagItem> tagsInUserLocation = new ArrayList<ListTagItem>();
+
+		for (int i = 0; i < fakeTags.size(); i++) {
+			tagLocation = fakeTags.get(i).tag_location;
+			if ((userLocation.distanceTo(tagLocation) - tagLocation.getAccuracy()) <= (radius + 1000)){
+				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag , tagLocation));
+			}
+		}
+		mainTagContainer = (ListView)findViewById(R.id.mainTagContainer);
+		ListAdapter listAdapter = new TagListAdapter(this, tagsInUserLocation);
+		mainTagContainer.setAdapter(listAdapter);
+		
+		
+		for (int i = 0; i < fakeTags.size(); i++) {
+			System.out.println("tag: " + fakeTags.get(i).tag);
+			System.out.println("tag location: " + fakeTags.get(i).tag_location.getLatitude() + ", " + fakeTags.get(i).tag_location.getLongitude());
+		}*/
+
+	}
+	
+	
+	private void chooseTagsAndDisplay() {
+
 		float radius = userLocation.getAccuracy();
 		Location tagLocation;
 		ArrayList<ListTagItem> tagsInUserLocation = new ArrayList<ListTagItem>();
@@ -104,7 +136,8 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		}
 
 	}
-
+	
+	
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -123,7 +156,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		initiatePopupWindow();
 	}
 
-	// Tag Item
+	/*----------------------------------------------------- Tag Item -----------------------------------------------------------*/
 	public void onClickItem(final View view) {
 		position = (Integer) view.getTag();
 		Toast.makeText(this, TagListAdapter.items.get(position).tag, Toast.LENGTH_SHORT).show();
@@ -244,6 +277,25 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		// notificationID allows you to update the notification later on.
 		mNotificationManager.notify(123, mBuilder.build());
+	}
+	
+public void onDataLoadeFromServer(ArrayList<ListTagItem> listOfTags) {
+	
+	fakeTags = listOfTags;
+	chooseTagsAndDisplay();
+	
+	
+		/*userData = listOfTags;
+		updatedUserData = new ArrayList<ListItem>(userData);
+		
+		mainContainer = (ListView) findViewById(R.id.mainContainer);
+		
+		baseListAdapter = new MainListAdapter(this, userData);
+		adapter = new MainListAdapter(this, updatedUserData);
+		mainContainer.setAdapter(adapter);
+		myAdapter = adapter;
+		
+		usersDataLoaded = !usersDataLoaded;*/
 	}
 }
 
