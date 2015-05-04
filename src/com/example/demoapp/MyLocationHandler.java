@@ -12,8 +12,11 @@ import com.example.demoapp.helpers.ServerCommunicator;
 import com.google.android.gms.location.GeofencingEvent;
 
 
+
+
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 //import android.content.SharedPreferences;
 import android.widget.Toast;
 
@@ -22,6 +25,7 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 
 	//SharedPreferences settings = getSharedPreferences("UserInfo", 0);
 	private boolean onCampus = true;
+	SharedPreferences settings = geofencingService.settings;//getSharedPreferences("UserInfo", 0);
 	
 	
 	public MyLocationHandler() {
@@ -34,24 +38,27 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 		GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 		geofencingService.geoStatus = geofencingEvent.getGeofenceTransition();		
 		
-		
 		if ((geofencingService.geoStatus == 1) || (geofencingService.geoStatus == 4)) {
-			this.sendCheckInToServer(geofencingService.settings.getInt("uid", -5), onCampus);
+			
+			this.sendCheckInToServer(settings.getString("uid", "no uid"), onCampus);
 			Toast.makeText(this, "AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
+			
 		} else if (geofencingService.geoStatus == 2) {
-			this.sendCheckInToServer(geofencingService.settings.getInt("uid", -5), !onCampus);
+			
+			this.sendCheckInToServer(settings.getString("uid", "no uid"), !onCampus);
 			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
+			
 		} else {
 			Toast.makeText(this, "AUTO : geoStatus NULL", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
-	
-	
-	public void sendCheckInToServer(int userId, boolean onCampus ) {
+	public void sendCheckInToServer(String userId, boolean onCampus ) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("userId", Integer.toString(userId)));
-		params.add(new BasicNameValuePair("onCampus", Boolean.toString(onCampus)));
+		
+		params.add(new BasicNameValuePair("userId", userId));
+		params.add(new BasicNameValuePair("onCampus", Integer.toString(onCampus? 1 : 0)));
+		
 		new ServerCommunicator(this, params, ServerCommunicator.METHOD_POST)
 				.execute("http://ram.milab.idc.ac.il/app_send_chekin.php");
 	}
@@ -68,6 +75,5 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 			e.printStackTrace();
 			Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
 		}
-	
 	}
 }

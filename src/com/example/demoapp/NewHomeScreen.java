@@ -95,9 +95,16 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	String regid;
 	String targetID = "APA91bGhtJwtxwvFSbq0GLk1lbuL_D92jJTjojfFs4wbg_bEdc_Q_gqt0AJEauUG55YdvQpEuxcBop6Yb4iKYb3RjKXtTJSAollo8EwgtZxvkkqXoQTMwOxxX5NVXFM3JXE6L6q08xa6rh9En9AK8S5kRJcQ7fxQ";
 	String message = "This is a test GCM message!!";
+	private String locationSenderId;
+	private String locationSenderTag;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if (getIntent().getExtras() != null){
+			locationSenderId = getIntent().getExtras().getString("user_id");	
+			locationSenderTag = getIntent().getExtras().getString("tag");
+		}
 		
 		setContentView(R.layout.activity_new_home_screen);
 		blur_layout = (FrameLayout) findViewById(R.id.newScreenFrame);
@@ -196,8 +203,32 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	
 	public void onDataLoadeFromServer(ArrayList<ListItem> listOfUsers) {
 		/**----------------------    TEST    ------------------------**/
-		listOfUsers.get(1).icon_status = IconStatus.request_received;
+		//listOfUsers.get(1).icon_status = IconStatus.request_received;
 		/**----------------------    TEST    ------------------------**/
+		
+		int locationSenderIndex = 0;
+		
+		if (locationSenderId != null && locationSenderTag != null) {
+			
+			ArrayList<ListItem> tmpListOfUsers = new ArrayList<ListItem>();
+			
+			for (int i = 0; i < listOfUsers.size(); i++) {
+				if (listOfUsers.get(i).uId.equalsIgnoreCase(locationSenderId)){
+					listOfUsers.get(i).Location = locationSenderTag;
+					listOfUsers.get(i).icon_status = IconStatus.answer_received;
+					locationSenderIndex = i;
+				}
+			}
+			if (locationSenderIndex != 0) {
+				ListItem locationSenderItem = listOfUsers.get(locationSenderIndex);
+				listOfUsers.remove(locationSenderIndex);
+				tmpListOfUsers.add(locationSenderItem);
+				for (int i = 0; i < listOfUsers.size(); i++) {
+					tmpListOfUsers.add(listOfUsers.get(i));
+				}
+				listOfUsers = tmpListOfUsers;
+			}
+		}
 		
 		
 		userData = listOfUsers;
@@ -253,6 +284,9 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			view.setSelected(true);
 			Toast.makeText(this, "Location request was sent to: " + MainListAdapter.items.get(position).contact_name, Toast.LENGTH_SHORT).show();
 			view.setId(2);
+			
+			sendGcmLocationRquest(view);
+			
 			MainListAdapter.items.get(position).icon_status = IconStatus.request_sent;
 			myAdapter.notifyDataSetChanged();
 			break;
@@ -331,10 +365,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	private void initiatePopupWindow(View view) {
 
 		// We need to get the instance of the LayoutInflater
-		LayoutInflater inflater = (LayoutInflater) NewHomeScreen.this
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View layout = inflater.inflate(R.layout.activity_answer_popup,
-				(ViewGroup) findViewById(R.id.popup_element));
+		LayoutInflater inflater = (LayoutInflater) NewHomeScreen.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.activity_answer_popup,(ViewGroup) findViewById(R.id.popup_element));
 
 		pwindo = new PopupWindow(layout, 700, 500, false);
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
@@ -346,18 +378,15 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		pwindo.update();
 
 		// Set the contact name
-		TextView contactName = (TextView) layout
-				.findViewById(R.id.answer_contact_name);
+		TextView contactName = (TextView) layout.findViewById(R.id.answer_contact_name);
 		contactName.setText(MainListAdapter.items.get(position).contact_name);
 
 		// Set date and date
-		TextView contactDate = (TextView) layout
-				.findViewById(R.id.answer_location_time);
+		TextView contactDate = (TextView) layout.findViewById(R.id.answer_location_time);
 		contactDate.setText(MainListAdapter.items.get(position).tagDateTime);
 
 		// Set status message
-		TextView contactStatus = (TextView) layout
-				.findViewById(R.id.answer_status);
+		TextView contactStatus = (TextView) layout.findViewById(R.id.answer_status);
 		if (view.getId() == 5) {
 			contactStatus.setText("User is currently not on campus");
 		} else {
@@ -365,20 +394,14 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 
 		// Set the contact location
-		TextView Location = (TextView) layout
-				.findViewById(R.id.answer_location);
+		TextView Location = (TextView) layout.findViewById(R.id.answer_location);
 		Location.setText(MainListAdapter.items.get(position).Location);
 
 		// Set the profile picture
-		ImageView profilePicture = (ImageView) layout
-				.findViewById(R.id.answer_profile_picture);
-		Drawable profileImageAsDrawable = new BitmapDrawable(
-				NewHomeScreen.this.getResources(),
-				((BitmapPosition) view.getTag()).bitmap);
+		ImageView profilePicture = (ImageView) layout.findViewById(R.id.answer_profile_picture);
+		Drawable profileImageAsDrawable = new BitmapDrawable(NewHomeScreen.this.getResources(),((BitmapPosition) view.getTag()).bitmap);
 		profilePicture.setImageDrawable(profileImageAsDrawable);
-		Picasso.with(NewHomeScreen.this)
-				.load(MainListAdapter.items.get(position).profile_pic)
-				.into(profilePicture);
+		Picasso.with(NewHomeScreen.this).load(MainListAdapter.items.get(position).profile_pic).into(profilePicture);
 	}
 
 	private OnClickListener cancel_button_click_listener = new OnClickListener() {
@@ -511,13 +534,25 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}.execute(null, null, null);
 	}
 
-	// Send an GCM location request.
+	/*------------------------------------------ Send an GCM location request. --------------------------------------------------*/
 	public void sendGcmLocationRquest(final View view) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		System.out.println("the registration id: " + regid);
-
+		
+		targetID = MainListAdapter.items.get(position).gcm_id;
+		
+	/*  The msg fields: 1. type of message 2. ID 3. name 4. tag (empty in type '1')
+		For example: 2,301633590,or bokobza,in some place.*/
+		
+		StringBuilder gcm_message = new StringBuilder();
+		gcm_message.append(1).append(",")
+					.append(regid).append(",")
+					.append(settings.getString("userName", "Your friend")).append(".");
+		message = gcm_message.toString();
+		
+		
 		/* here we put the reciever id" */
-		params.add(new BasicNameValuePair("target", regid/* targetID */));
+		params.add(new BasicNameValuePair("target", targetID));
 		/* here we put the message we want to sent" */
 		params.add(new BasicNameValuePair("message", message));
 

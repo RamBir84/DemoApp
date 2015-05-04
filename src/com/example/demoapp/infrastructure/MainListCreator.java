@@ -1,9 +1,6 @@
 package com.example.demoapp.infrastructure;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -48,10 +45,10 @@ public class MainListCreator implements ServerAsyncParent {
 
 	public void setDataFromServer(JSONArray users) {
 		try {
-			
+			/*
 			SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault());
 			String date = df.format(Calendar.getInstance().getTime());
-			
+			*/
 			// looping through All Users prepare the list of all records
 			for (int i = 0; i < users.length(); i++) {
 				JSONObject row = users.getJSONObject(i);

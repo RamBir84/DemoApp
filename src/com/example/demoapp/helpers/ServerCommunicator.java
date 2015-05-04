@@ -16,11 +16,8 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 	public static final String METHOD_POST = "POST";

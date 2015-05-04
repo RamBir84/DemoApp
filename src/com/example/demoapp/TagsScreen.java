@@ -7,31 +7,25 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.demoapp.helpers.ServerAsyncParent;
-import com.example.demoapp.helpers.ServerCommunicator;
-import com.example.demoapp.infrastructure.ListItem;
-import com.example.demoapp.infrastructure.ListTagItem;
-import com.example.demoapp.infrastructure.MainListAdapter;
-import com.example.demoapp.infrastructure.TagListAdapter;
-import com.example.demoapp.infrastructure.TagListCreator;
-
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -39,6 +33,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+
+import com.example.demoapp.helpers.ServerAsyncParent;
+import com.example.demoapp.helpers.ServerCommunicator;
+import com.example.demoapp.infrastructure.ListTagItem;
+import com.example.demoapp.infrastructure.TagListAdapter;
+import com.example.demoapp.infrastructure.TagListCreator;
 
 
 public class TagsScreen extends Activity implements ServerAsyncParent {
@@ -52,11 +52,14 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	String newTag;
 	EditText tagEdit;
 	int position;
+	String targetID;
 	//boolean tagListReady = false;
+	private String message;
 
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_tags_screen);
 		blur_layout = (FrameLayout) findViewById(R.id.tagScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
@@ -66,6 +69,9 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 			startService(new Intent(getBaseContext(), geofencingService.class));
 		}
 		userLocation = geofencingService.userLocation;
+		
+		//targetID = savedInstanceState.getString("gcm_id");
+		targetID = getIntent().getExtras().getString("gcm_id");
 		
 		new TagListCreator(userLocation, this);
 
@@ -158,10 +164,53 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 
 	/*----------------------------------------------------- Tag Item -----------------------------------------------------------*/
 	public void onClickItem(final View view) {
+		
+		SharedPreferences settings = getSharedPreferences("UserInfo", 0);
 		position = (Integer) view.getTag();
+		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		/*  The msg fields: 1. type of message 2. ID 3. name 4. tag (empty in type '1')
+		For example: 2,301633590,or bokobza,in some place.*/
+		
+		StringBuilder gcm_message = new StringBuilder();
+		gcm_message.append(2).append(",")
+					.append(settings.getString("uid", "Your friend")).append(",")
+					.append(settings.getString("userName", "Your friend")).append(",")
+					.append(TagListAdapter.items.get(position).tag).append(".");
+		message = gcm_message.toString();
+		
+		
+		/* here we put the reciever id" */
+		params.add(new BasicNameValuePair("target", targetID));
+		/* here we put the message we want to sent" */
+		params.add(new BasicNameValuePair("message", message));
+
+		new ServerCommunicator(new ServerAsyncParent() {
+			
+			@Override
+			public void doOnPostExecute(JSONObject jObj) {
+				// TODO Auto-generated method stub
+				int gcmResponsStatus = 0;
+
+				try {
+					gcmResponsStatus = jObj.getInt("header");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				if (gcmResponsStatus == 200) {
+					/*--Do here the change in the friend list item--*/
+				} else {
+					Log.v("GCM", "Send location request failed" + jObj.toString());
+				}
+			}
+		}, params, ServerCommunicator.METHOD_POST)
+				.execute("http://ram.milab.idc.ac.il/GCM_send_message.php");
+		
 		Toast.makeText(this, TagListAdapter.items.get(position).tag, Toast.LENGTH_SHORT).show();
 		// **Have to Add - change the data to: data.icon_status = "online"
 		startActivity(new Intent(this, NewHomeScreen.class));
+		finish();
 		//Toast.makeText(this, "Tag was sent", Toast.LENGTH_SHORT).show();	
 	}
 
@@ -212,7 +261,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 			sendTag(tag, userLocation);
 			Toast.makeText(TagsScreen.this, "Tag Was sent: " + tag, Toast.LENGTH_SHORT).show();
 			
-			fakeTags.add(new ListTagItem(tag,userLocation));
+			//fakeTags.add(new ListTagItem(tag,userLocation));
 			startActivity(new Intent(TagsScreen.this, NewHomeScreen.class));
 			finish();
 		}
