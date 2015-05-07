@@ -534,7 +534,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}.execute(null, null, null);
 	}
 
-	/*------------------------------------------ Send an GCM location request. --------------------------------------------------*/
+	/*------------------------------------------ Send a GCM location request. --------------------------------------------------*/
 	public void sendGcmLocationRquest(final View view) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		System.out.println("the registration id: " + regid);

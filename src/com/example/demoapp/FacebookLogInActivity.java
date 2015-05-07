@@ -139,7 +139,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
                     public void onSuccess(LoginResult loginResult) {
                       handlePendingAction();
                       updateUI();
-                      sendLogInData();
+                      //sendLogInData();
                     }
 
                     @Override
@@ -186,6 +186,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
                 // It's possible that we were waiting for Profile to be populated in order to
                 // post a status update.
                 handlePendingAction();
+                sendLogInData();
             }
         };
 
@@ -376,7 +377,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
     		params.add(new BasicNameValuePair("userName", profile.getName()));
     		params.add(new BasicNameValuePair("fb_token", accessToken.getToken()));
 		}
-		new ServerCommunicator(this, params, ServerCommunicator.METHOD_POST).execute("http://ram.milab.idc.ac.il/app_send_details.php");
+		new ServerCommunicator(this, params, ServerCommunicator.METHOD_POST).execute("http://ram.milab.idc.ac.il/app_send_log_in_details.php");
 	}
     
     public boolean savedUserData(){

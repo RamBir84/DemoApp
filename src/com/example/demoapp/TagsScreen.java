@@ -55,6 +55,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	String targetID;
 	//boolean tagListReady = false;
 	private String message;
+	SharedPreferences settings = null;
 
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		userLocation = geofencingService.userLocation;
 		
 		//targetID = savedInstanceState.getString("gcm_id");
-		targetID = getIntent().getExtras().getString("gcm_id");
+		
 		
 		new TagListCreator(userLocation, this);
 
@@ -116,6 +117,13 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 			System.out.println("tag location: " + fakeTags.get(i).tag_location.getLatitude() + ", " + fakeTags.get(i).tag_location.getLongitude());
 		}*/
 
+	}
+	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		super.onNewIntent(intent);
+		targetID = intent.getExtras().getString("gcm_id");
 	}
 	
 	
@@ -164,8 +172,9 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 
 	/*----------------------------------------------------- Tag Item -----------------------------------------------------------*/
 	public void onClickItem(final View view) {
-		
-		SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+			
+		targetID = getIntent().getExtras().getString("gcm_id");
+		settings = getSharedPreferences("UserInfo", 0);
 		position = (Integer) view.getTag();
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -280,7 +289,46 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	
 	public void sendTag(String tag, Location tagLocation) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-				
+		
+/*---------------------------------------Send Tag to friend------------------------------------------------------*/
+		StringBuilder gcm_message = new StringBuilder();
+		gcm_message.append(2).append(",")
+					.append(settings.getString("uid", "Your friend")).append(",")
+					.append(settings.getString("userName", "Your friend")).append(",")
+					.append(tag).append(".");
+		message = gcm_message.toString();
+		
+		/* here we put the reciever id" */
+		params.add(new BasicNameValuePair("target", targetID));
+		/* here we put the message we want to sent" */
+		params.add(new BasicNameValuePair("message", message));
+
+		new ServerCommunicator(new ServerAsyncParent() {
+			
+			@Override
+			public void doOnPostExecute(JSONObject jObj) {
+				// TODO Auto-generated method stub
+				int gcmResponsStatus = 0;
+
+				try {
+					gcmResponsStatus = jObj.getInt("header");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				if (gcmResponsStatus == 200) {
+					/*--Do here the change in the friend list item--*/
+				} else {
+					Log.v("GCM", "Send new Tag to friend failed" + jObj.toString());
+				}
+			}
+		}, params, ServerCommunicator.METHOD_POST)
+				.execute("http://ram.milab.idc.ac.il/GCM_send_message.php");
+		
+
+/*---------------------------------------Send Tag to server------------------------------------------------------*/		
+		params = new ArrayList<NameValuePair>();
+		
 		params.add(new BasicNameValuePair("name", tag));
 		params.add(new BasicNameValuePair("latitude", Double.toString(tagLocation.getLatitude())));
 		params.add(new BasicNameValuePair("longitude", Double.toString(tagLocation.getLongitude())));
@@ -306,6 +354,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 			e.printStackTrace();
 		}
 	}	
+
 	
 	private void triggerNotification() {
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -327,6 +376,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		// notificationID allows you to update the notification later on.
 		mNotificationManager.notify(123, mBuilder.build());
 	}
+
 	
 public void onDataLoadeFromServer(ArrayList<ListTagItem> listOfTags) {
 	
