@@ -110,14 +110,21 @@ public class GcmIntentService extends IntentService {
 			Intent intentForNotification = new Intent(this, TagsScreen.class);
 			intentForNotification.putExtra("gcm_id", id);
 			
+<<<<<<< Updated upstream
 			contentIntent = PendingIntent.getActivity(this, 0, intentForNotification, PendingIntent.FLAG_UPDATE_CURRENT);
+=======
+			contentIntent = PendingIntent.getActivity(this, 0, intentForNotification, 0);
+>>>>>>> Stashed changes
 			mBuilder = new NotificationCompat.Builder(this)
 					.setSmallIcon(R.drawable.ic_notification) // have to set a new icon here(if we want to)
 					.setContentTitle("Request Received")
 					.setStyle(new NotificationCompat.BigTextStyle()
 					.bigText("Request received from: " + name))
 					.setContentText("Request received from: " + name);
+<<<<<<< Updated upstream
 			
+=======
+>>>>>>> Stashed changes
 		} else { // If from type 2 (location Received)
 			
 			Intent intentForNotification = new Intent(this, NewHomeScreen.class);

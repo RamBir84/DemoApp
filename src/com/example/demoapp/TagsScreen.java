@@ -55,7 +55,10 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	String targetID;
 	//boolean tagListReady = false;
 	private String message;
+<<<<<<< Updated upstream
 	SharedPreferences settings = null;
+=======
+>>>>>>> Stashed changes
 
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,11 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		userLocation = geofencingService.userLocation;
 		
 		//targetID = savedInstanceState.getString("gcm_id");
+<<<<<<< Updated upstream
 		
+=======
+		targetID = getIntent().getExtras().getString("gcm_id");
+>>>>>>> Stashed changes
 		
 		new TagListCreator(userLocation, this);
 
@@ -172,9 +179,14 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 
 	/*----------------------------------------------------- Tag Item -----------------------------------------------------------*/
 	public void onClickItem(final View view) {
+<<<<<<< Updated upstream
 			
 		targetID = getIntent().getExtras().getString("gcm_id");
 		settings = getSharedPreferences("UserInfo", 0);
+=======
+		
+		SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+>>>>>>> Stashed changes
 		position = (Integer) view.getTag();
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 
